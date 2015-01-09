@@ -17,3 +17,16 @@ GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
 along with Canary Latch. If not, see http://www.gnu.org/licenses/.
+
+## INSTALL
+
+## INSTRUCTIONS
+
+## PURPOSE OF THE PLUGIN
+
+## WHY I WROTE CANARY LATCH
+
+## MAIN USE CASES
+
+## KNOWN USERS
+
