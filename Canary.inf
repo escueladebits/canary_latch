@@ -1,0 +1,5 @@
+main-class = com.escueladebits.canary_latch.LatchPlugin
+name = CanaryLatch
+author = Antonio Jesus Sanchez Padial
+version = 0.1
+language = java 
