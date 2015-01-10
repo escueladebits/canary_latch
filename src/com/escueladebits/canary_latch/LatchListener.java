@@ -54,14 +54,7 @@ public class LatchListener implements PluginListener {
     public void onTick(ServerTickHook hook) {
         time0 += hook.getDeltaTime();
         if (time0 >= THRESHOLD) {
-            /*
-            foreach player in current_players:
-                latch.updateStatus(player)
-                if (latch.isLatchOut(player)):
-                    latch.latchBan(player)
-
-                    // set a message for banned user
-            */
+            latch.updateAll();
             time0 = 0;
         }
     }

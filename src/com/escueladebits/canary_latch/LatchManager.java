@@ -100,6 +100,20 @@ public class LatchManager {
     }
 
     /**
+     * Update Latch status for all current players.
+     */
+    public void updateAll() {
+        /*
+        foreach player in current_players:
+            latch.updateStatus(player)
+            if (latch.isLatchOut(player)):
+                latch.latchBan(player)
+
+                // set a message for banned user
+        */
+    }
+
+    /**
      *
      * @param player     A Minecraft player
      */
