@@ -19,6 +19,11 @@ along with Canary Latch. If not see <http://www.gnu.org/licenses/>.
 
 package com.escueladebits.canary_latch;
 
+import net.canarymod.commandsys.CommandListener;
+import net.canarymod.commandsys.Command;
+import net.canarymod.chat.MessageReceiver;
+import net.canarymod.api.entity.living.humanoid.Player;
+
 /**
  * This class of 
  */
@@ -42,14 +47,18 @@ public class LatchCommands implements CommandListener {
      * @param parameters Params
      */
     @Command(aliases = { "latch_pair" },
-            description = { "Pair a Minecraft player with a latch account." },
+            description = "Pair a Minecraft player with a latch account.",
             permissions = { "" },
             toolTip = "/latch_pair <token>",
             min = 2)
     public void pairCommand(MessageReceiver caller, String[] parameters) {
-        Player player = caller.getPlayer();
-        String token = parameters[1];
-        latch.pairPlayer(player, token);
+        if (caller instanceof Player) {
+            String token = parameters[1];
+            latch.pairPlayer((Player)caller, token);
+        }
+        else {
+            // TODO: Manage error
+        }
     } 
 
     /**
@@ -58,13 +67,14 @@ public class LatchCommands implements CommandListener {
      * @param parameters Params
      */
     @Command(aliases = { "latch_unpair" },
-            description = { "Unpair a player from its latch account." },
+            description = "Unpair a player from its latch account.",
             permissions = { "" },
             toolTip = "/latch_unpair",
             max = 1)
     public void unpairCommand(MessageReceiver caller, String[] parameters) {
-        Player player = caller.getPlayer();
-        latch.unpairPlayer(player);
+        if (caller instanceof Player) {
+            latch.unpairPlayer((Player)caller);
+        }
     }
 
     /**
@@ -73,7 +83,7 @@ public class LatchCommands implements CommandListener {
      * @param parameters Params
      */
     @Command(aliases = { "latch_update" },
-            description = { "Update the Latch status of all current users." },
+            description = "Update the Latch status of all current users.",
             permissions = { "" },
             toolTip = "/latch_update",
             max = 1)
