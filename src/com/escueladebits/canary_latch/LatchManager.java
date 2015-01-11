@@ -83,7 +83,7 @@ public class LatchManager {
      */
     public void updateStatus(Player player) {
         String latchAccount = getLatchAccount(player);
-        if (latchAccount == "") {
+        if (latchAccount != "") {
             LatchResponse response = latch.status(latchAccount);
             if (response.getError() == null) {
                 JsonObject data = response.getData();
@@ -137,10 +137,7 @@ public class LatchManager {
      * @param player     A Minecraft player
      */
     public void latchBan(Player player) {
-        /*
-        Canary.kick(player)
-        Canary.ban(player)
-        */
+        player.kick("Banned from Latch service.");
     } 
 
     private String getLatchAccount(Player player) {
