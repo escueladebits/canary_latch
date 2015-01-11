@@ -31,6 +31,10 @@ import net.canarymod.plugin.Plugin;
  * not) of current users. 
  */
 public class LatchPlugin extends Plugin {
+
+    private LatchConfig config;
+    private LatchManager latch;
+
     /**
      * Starts the plugin. Registers listeners for user connections and latch
      * updates, and register commands for pairing, unpairing and updating 
@@ -40,9 +44,11 @@ public class LatchPlugin extends Plugin {
      */
     @Override
     public boolean enable() {
-        // Read latch configuration from canary setup
+        config = new LatchConfig(this);
+        String secretKey = config.getSecretKey();
+        String applicationId = config.getApplicationId();
 
-        // Create latch manager
+        latch = new LatchManager(secretKey, applicationId);
 
         // Register connection listener
 
@@ -52,8 +58,8 @@ public class LatchPlugin extends Plugin {
 
         // Register updating command
 
-        // Update current user
-        return false;
+        latch.updateAll();
+	return false;
     }
 
     /**
