@@ -22,6 +22,7 @@ package com.escueladebits.canary_latch;
 import net.canarymod.plugin.PluginListener;
 import net.canarymod.hook.system.ServerTickHook;
 import net.canarymod.hook.player.ConnectionHook;
+import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.hook.HookHandler;
 
 /**
@@ -29,7 +30,7 @@ import net.canarymod.hook.HookHandler;
  */
 public class LatchListener implements PluginListener {
 
-    private static THRESHOLD = 10000000;
+    private static long THRESHOLD = 10000000;
 
     private long time0;
     private LatchManager latch;
