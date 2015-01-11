@@ -20,6 +20,8 @@ along with Canary Latch. If not see <http://www.gnu.org/licenses/>.
 package com.escueladebits.canary_latch;
 
 import net.canarymod.plugin.Plugin;
+import net.canarymod.Canary;
+import net.canarymod.commandsys.CommandDependencyException;
 
 /**
  * This class provides an additional security access layer to a CanaryMod
@@ -48,18 +50,21 @@ public class LatchPlugin extends Plugin {
         String secretKey = config.getSecretKey();
         String applicationId = config.getApplicationId();
 
-        latch = new LatchManager(secretKey, applicationId);
+        latch = new LatchManager(applicationId, secretKey);
 
-        // Register connection listener
+        LatchListener listener = new LatchListener(latch);
+        Canary.hooks().registerListener(listener, this);
 
-        // Register pairing command
-
-        // Register unpairing command
-
-        // Register updating command
+        LatchCommands commands = new LatchCommands(latch);
+        try {
+            Canary.commands().registerCommands(commands, this, false);
+        }
+        catch (CommandDependencyException ex) {
+            return false;
+        }
 
         latch.updateAll();
-	return false;
+	return true;
     }
 
     /**
