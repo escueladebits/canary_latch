@@ -22,6 +22,7 @@ package com.escueladebits.canary_latch;
 import net.canarymod.plugin.Plugin;
 import net.canarymod.Canary;
 import net.canarymod.commandsys.CommandDependencyException;
+import net.visualillusionsent.utils.TaskManager;
 
 /**
  * This class provides an additional security access layer to a CanaryMod
@@ -54,6 +55,9 @@ public class LatchPlugin extends Plugin {
 
         LatchListener listener = new LatchListener(latch);
         Canary.hooks().registerListener(listener, this);
+
+        UpdateTask updateTask = new UpdateTask(latch);
+        TaskManager.scheduleDelayedTaskInMinutes(updateTask, 3);
 
         LatchCommands commands = new LatchCommands(latch);
         try {

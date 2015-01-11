@@ -30,9 +30,6 @@ import net.canarymod.hook.HookHandler;
  */
 public class LatchListener implements PluginListener {
 
-    private static long THRESHOLD = 10000000;
-
-    private long time0;
     private LatchManager latch;
     
     /**
@@ -42,22 +39,7 @@ public class LatchListener implements PluginListener {
      *               retrieve information on users status, etc.
      */
     public LatchListener(LatchManager latch) {
-        time0 = 0;
-    }
-
-    /**
-     * Ban playing users whose latch status have changed since last.
-     *
-     * @param hook   A CanaryMod hook launched every time the game server clock
-     *               ticks.
-     */
-    @HookHandler
-    public void onTick(ServerTickHook hook) {
-        time0 += hook.getDeltaTime();
-        if (time0 >= THRESHOLD) {
-            latch.updateAll();
-            time0 = 0;
-        }
+        this.latch = latch;
     }
 
     /**
