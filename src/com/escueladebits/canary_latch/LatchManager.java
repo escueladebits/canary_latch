@@ -108,8 +108,8 @@ public class LatchManager {
     public void updateAll() {
         // Tricky hack
         // https://github.com/CanaryModTeam/CanaryMod/blob/1.7.10-1.1.3/src/main/java/net/minecraft/server/MinecraftServer.java#L930
-        // TODO: document why I()
-        MinecraftServer minecraftServer = MinecraftServer.I();
+        //MinecraftServer minecraftServer = MinecraftServer.I();
+        MinecraftServer minecraftServer = MinecraftServer.M();
 
         for (World world: minecraftServer.worldManager.getAllWorlds()) {
             PlayerManager playerManager = world.getPlayerManager();
