@@ -24,6 +24,9 @@ import com.elevenpaths.latch.LatchResponse;
 import com.elevenpaths.latch.Error;
 import com.google.gson.JsonObject;
 import net.canarymod.api.entity.living.humanoid.Player;
+import net.canarymod.api.world.World;
+import net.canarymod.api.PlayerManager;
+import net.minecraft.server.MinecraftServer;
 
 /**
  * This class of 
@@ -103,14 +106,22 @@ public class LatchManager {
      * Update Latch status for all current players.
      */
     public void updateAll() {
-        /*
-        foreach player in current_players:
-            latch.updateStatus(player)
-            if (latch.isLatchOut(player)):
-                latch.latchBan(player)
+        // Tricky hack
+        // https://github.com/CanaryModTeam/CanaryMod/blob/1.7.10-1.1.3/src/main/java/net/minecraft/server/MinecraftServer.java#L930
+        // TODO: document why I()
+        MinecraftServer minecraftServer = MinecraftServer.I();
 
-                // set a message for banned user
-        */
+        for (World world: minecraftServer.worldManager.getAllWorlds()) {
+            PlayerManager playerManager = world.getPlayerManager();
+            for (Player player: playerManager.getManagedPlayers()) {
+                updateStatus(player);
+                if (isLatchOut(player)) {
+                    latchBan(player);
+
+                    // TODO: send a message to the banned player
+                }
+            }
+        }
     }
 
     /**
