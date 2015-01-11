@@ -41,13 +41,13 @@ class LatchConfig {
      *
      */
     public String getSecretKey() {
-        return config.getString("secret_key");
+        return config.getString("secret-key");
     }
 
     /**
      *
      */
     public String getApplicationId() {
-        return config.getString("application_id");
+        return config.getString("application-id");
     }
 }
