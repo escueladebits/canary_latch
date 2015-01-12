@@ -21,24 +21,28 @@ package com.escueladebits.canary_latch;
 
 import net.visualillusionsent.utils.TaskManager;
 import java.util.concurrent.Callable;
+import net.canarymod.logger.Logman;
 
 /**
  */
 public class UpdateTask implements Callable<Void> {
 
     private LatchManager latch;
+    private LatchPlugin plugin;
 
     /**
      * Constructor.
      */
-    public UpdateTask(LatchManager latch) {
+    public UpdateTask(LatchPlugin plugin, LatchManager latch) {
         this.latch = latch;
+        this.plugin = plugin;
     }
 
     /**
      *
      */
     public Void call() {
+        plugin.getLogman().info("Launching scheduled task.");
         latch.updateAll();
         TaskManager.scheduleDelayedTaskInMinutes(this, 3);
         return null;

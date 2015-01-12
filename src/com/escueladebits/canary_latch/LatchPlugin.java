@@ -47,26 +47,32 @@ public class LatchPlugin extends Plugin {
      */
     @Override
     public boolean enable() {
+        String name = getName(), version = getVersion(), author = getAuthor();
+        getLogman().info("Enabling " + name + " - Version " + version);
+        getLogman().info("Authored by " + author);
+
         config = new LatchConfig(this);
         String secretKey = config.getSecretKey();
         String applicationId = config.getApplicationId();
 
-        latch = new LatchManager(applicationId, secretKey);
+        getLogman().info("Connecting to Latch service.");
+        latch = new LatchManager(this, applicationId, secretKey);
 
-        LatchListener listener = new LatchListener(latch);
+        LatchListener listener = new LatchListener(this, latch);
         Canary.hooks().registerListener(listener, this);
 
-        UpdateTask updateTask = new UpdateTask(latch);
+        UpdateTask updateTask = new UpdateTask(this, latch);
         TaskManager.scheduleDelayedTaskInMinutes(updateTask, 3);
 
-        LatchCommands commands = new LatchCommands(latch);
+        LatchCommands commands = new LatchCommands(this, latch);
         try {
             Canary.commands().registerCommands(commands, this, false);
         }
         catch (CommandDependencyException ex) {
             return false;
         }
-
+        
+        getLogman().info("Plugin " + name + " ready. Updating status ...");
         latch.updateAll();
 	return true;
     }
@@ -76,5 +82,6 @@ public class LatchPlugin extends Plugin {
      */
     @Override
     public void disable() {
+        getLogman().info("Disabling plugin " + getName());
     }
  }

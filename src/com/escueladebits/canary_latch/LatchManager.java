@@ -31,6 +31,7 @@ import net.canarymod.database.Database;
 import net.canarymod.database.exceptions.DatabaseWriteException;
 import net.canarymod.database.exceptions.DatabaseReadException;
 import java.util.HashMap;
+import net.canarymod.logger.Logman;
 
 /**
  * This class of 
@@ -41,6 +42,7 @@ public class LatchManager {
     private String applicationId;
 
     private Latch latch;
+    private LatchPlugin plugin;
 
     /**
      * Constructor.
@@ -48,10 +50,11 @@ public class LatchManager {
      * @param secret     The secret
      * @param key        The key
      */
-    public LatchManager(String applicationId, String secretKey) {
+    public LatchManager(LatchPlugin plugin, String appId, String secretKey) {
         this.secretKey = secretKey;
-        this.applicationId = applicationId;
+        this.applicationId = appId;
         latch = new Latch(this.applicationId, this.secretKey);
+        this.plugin = plugin;
     }
 
     /**
@@ -60,14 +63,18 @@ public class LatchManager {
      * @param token      A latch token the user received in her phone
      */
     public void pairPlayer(Player player, String token) {
+        String pName = player.getName();
+        plugin.getLogman().info("Pairing " + pName + "using token " + token);
         LatchResponse response = latch.pair(token);
         if (response.getError() == null) {
             JsonObject data = response.getData();
             String latchAccount = data.get("accountId").getAsString();
+            plugin.getLogman().info("Account " + latchAccount + " retrieved.");
             setLatchAccount(player, latchAccount);
         }
         else {
             // TODO: manage error
+            plugin.getLogman().info("Fail pairing account.");
         }
     }
 
@@ -76,6 +83,7 @@ public class LatchManager {
      * @param player    A Minecraft account
      */
     public void unpairPlayer(Player player) {
+        plugin.getLogman().info("Unpairing " + player.getName());
         String latchAccount = getLatchAccount(player);
         latch.unpair(latchAccount);
     }
@@ -86,18 +94,22 @@ public class LatchManager {
      * @param player     A Minecraft player.
      */
     public void updateStatus(Player player) {
+        String name = player.getName();
+        plugin.getLogman().info("Updating " + name + " latch status.");
         String latchAccount = getLatchAccount(player);
         if (latchAccount != "") {
             LatchResponse response = latch.status(latchAccount);
             if (response.getError() == null) {
                 JsonObject data = response.getData();
                 JsonObject operations = data.getAsJsonObject("operations");
-                JsonObject application = operations.getAsJsonObject(applicationId);
-                String status = application.get("status").getAsString();
+                JsonObject app = operations.getAsJsonObject(applicationId);
+                String status = app.get("status").getAsString();
+                plugin.getLogman().info("latch(" + name + ") = " + status);
                 setLatchStatus(player, status);
             }
             else {
                 // TODO: manage Error
+                plugin.getLogman().info("Status update failed.");
             }
         }
         else {
@@ -114,6 +126,7 @@ public class LatchManager {
         // https://github.com/CanaryModTeam/CanaryMod/blob/1.7.10-1.1.3/src/main/java/net/minecraft/server/MinecraftServer.java#L930
         //MinecraftServer minecraftServer = MinecraftServer.I();
         MinecraftServer minecraftServer = MinecraftServer.M();
+        plugin.getLogman().info("Upadting all connected players!");
 
         for (World world: minecraftServer.worldManager.getAllWorlds()) {
             PlayerManager playerManager = world.getPlayerManager();
@@ -141,6 +154,7 @@ public class LatchManager {
      * @param player     A Minecraft player
      */
     public void latchBan(Player player) {
+        plugin.getLogman().info("Latch banning " + player.getName());
         player.kick("Banned from Latch service.");
     } 
 
@@ -172,31 +186,35 @@ public class LatchManager {
 
     private String getLatchAccount(Player player) {
         LatchDataAccess dataAccess = getLatchData(player);
+        String name = player.getName(), account = dataAccess.latchAccount;
+        plugin.getLogman().info("(" + name + ", " + account + ")");
         return dataAccess.latchAccount;
     }
 
     private void setLatchAccount(Player player, String latchAccount) {
         LatchDataAccess dataAccess = new LatchDataAccess();
-        dataAccess.playerName = player.getName();
-        dataAccess.latchAccount = latchAccount;
+        String name = player.getName(), account = dataAccess.latchAccount;
+        dataAccess.playerName = name;
+        dataAccess.latchAccount = account;
   
+        plugin.getLogman().info("Setting (" + name + ", " + account + ")");
         updateLatchData(player, dataAccess);
     }
 
     private String getLatchStatus(Player player) {
         LatchDataAccess dataAccess = getLatchData(player);
+        String name = player.getName(), status = dataAccess.latchStatus;
+        plugin.getLogman().info("(" + name + ", " + status + ")");
         return dataAccess.latchStatus;
     }
 
     private void setLatchStatus(Player player, String status) {
         LatchDataAccess dataAccess = new LatchDataAccess();
-        dataAccess.playerName = player.getName();
+        String name = player.getName();
+        dataAccess.playerName = name;
         dataAccess.latchStatus = status;
 
+        plugin.getLogman().info("(" + name + ", " + status + ")");
         updateLatchData(player, dataAccess);
-    }
-
-    private void removeLatchAccount(Player player) {
-        setLatchAccount(player, "");
     }
 }

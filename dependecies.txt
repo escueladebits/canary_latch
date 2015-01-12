@@ -22,6 +22,7 @@ import net.canarymod.database.exceptions.DatabaseWriteException;
 import net.canarymod.hook.HookHandler;
 import net.canarymod.hook.player.ConnectionHook;
 import net.canarymod.hook.system.ServerTickHook;
+import net.canarymod.logger.Logman;
 import net.canarymod.plugin.Plugin;
 import net.canarymod.plugin.PluginListener;
 import net.minecraft.server.MinecraftServer;

@@ -24,6 +24,7 @@ import net.canarymod.hook.system.ServerTickHook;
 import net.canarymod.hook.player.ConnectionHook;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.hook.HookHandler;
+import net.canarymod.logger.Logman;
 
 /**
  * This class of 
@@ -31,6 +32,7 @@ import net.canarymod.hook.HookHandler;
 public class LatchListener implements PluginListener {
 
     private LatchManager latch;
+    private LatchPlugin plugin;
     
     /**
      * Constructor.
@@ -38,8 +40,9 @@ public class LatchListener implements PluginListener {
      * @param latch  A latch manager able to connect to the Latch server and
      *               retrieve information on users status, etc.
      */
-    public LatchListener(LatchManager latch) {
+    public LatchListener(LatchPlugin plugin, LatchManager latch) {
         this.latch = latch;
+        this.plugin = plugin;
     }
 
     /**
@@ -54,6 +57,8 @@ public class LatchListener implements PluginListener {
         Player player = hook.getPlayer();
         latch.updateStatus(player);
         if (latch.isLatchOut(player)) {
+            String name = player.getName();
+            plugin.getLogman().info(name + " banned by CanaryLatch.");
             latch.latchBan(player);
         }
         // set a message for ban user

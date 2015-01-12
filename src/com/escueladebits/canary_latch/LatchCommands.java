@@ -23,6 +23,7 @@ import net.canarymod.commandsys.CommandListener;
 import net.canarymod.commandsys.Command;
 import net.canarymod.chat.MessageReceiver;
 import net.canarymod.api.entity.living.humanoid.Player;
+import net.canarymod.logger.Logman;
 
 /**
  * This class of 
@@ -30,6 +31,7 @@ import net.canarymod.api.entity.living.humanoid.Player;
 public class LatchCommands implements CommandListener {
     
     private LatchManager latch;
+    private LatchPlugin plugin;
 
     /**
      * Constructor.
@@ -37,8 +39,9 @@ public class LatchCommands implements CommandListener {
      * @param latch      A LatchManager, responsible to bind a Minecraft server
      *                   with the Latch service.
      */
-    public LatchCommands (LatchManager latch) {
+    public LatchCommands (LatchPlugin plugin, LatchManager latch) {
         this.latch = latch;
+        this.plugin = plugin;
     }
 
     /**
@@ -58,6 +61,7 @@ public class LatchCommands implements CommandListener {
         }
         else {
             // TODO: Manage error
+            plugin.getLogman().info("/latch_pair should be run by a player."); 
         }
     } 
 
