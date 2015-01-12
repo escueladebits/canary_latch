@@ -27,6 +27,10 @@ import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.api.world.World;
 import net.canarymod.api.PlayerManager;
 import net.minecraft.server.MinecraftServer;
+import net.canarymod.database.Database;
+import net.canarymod.database.exceptions.DatabaseWriteException;
+import net.canarymod.database.exceptions.DatabaseReadException;
+import java.util.HashMap;
 
 /**
  * This class of 
@@ -140,22 +144,56 @@ public class LatchManager {
         player.kick("Banned from Latch service.");
     } 
 
+    private LatchDataAccess getLatchData(Player player) {
+        LatchDataAccess dataAccess = new LatchDataAccess();
+        try {
+            HashMap<String, Object> filter = new HashMap<String, Object>();
+            filter.put("player_name", player.getName());
+            Database.get().load(dataAccess, filter);
+            
+        }
+        catch (DatabaseReadException ex) {
+            // TODO: Problems to solve
+        }
+        return dataAccess;
+    }
+
+    private void updateLatchData(Player player, LatchDataAccess data) {
+        HashMap<String, Object> filter = new HashMap<String, Object>();
+        filter.put("player_name", player.getName());
+
+        try {
+            Database.get().update(data, filter);
+        }
+        catch (DatabaseWriteException ex) {
+            // TODO: Problems to solve
+        }
+    }
+
     private String getLatchAccount(Player player) {
-        // return CanaryDB.getField(player, 'latch_account')
-        return "";
+        LatchDataAccess dataAccess = getLatchData(player);
+        return dataAccess.latchAccount;
     }
 
     private void setLatchAccount(Player player, String latchAccount) {
-        // CanaryDB.setField(player, 'latch_account', latchAccount)
+        LatchDataAccess dataAccess = new LatchDataAccess();
+        dataAccess.playerName = player.getName();
+        dataAccess.latchAccount = latchAccount;
+  
+        updateLatchData(player, dataAccess);
     }
 
     private String getLatchStatus(Player player) {
-        // return CanaryDB.getField(player, 'latch_status')
-        return "off";
+        LatchDataAccess dataAccess = getLatchData(player);
+        return dataAccess.latchStatus;
     }
 
     private void setLatchStatus(Player player, String status) {
-        // CanaryDB.setField(player, 'latch_status', status);
+        LatchDataAccess dataAccess = new LatchDataAccess();
+        dataAccess.playerName = player.getName();
+        dataAccess.latchStatus = status;
+
+        updateLatchData(player, dataAccess);
     }
 
     private void removeLatchAccount(Player player) {
