@@ -26,7 +26,7 @@ import net.canarymod.database.DataAccess;
 /**
  *
  */
-class LatchDataAccess extends DataAccess {
+public class LatchDataAccess extends DataAccess {
     
     /**
      * Constructor.
