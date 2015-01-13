@@ -24,6 +24,7 @@ import net.canarymod.commandsys.Command;
 import net.canarymod.chat.MessageReceiver;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.logger.Logman;
+import net.canarymod.api.Server;
 
 /**
  * This class of 
@@ -79,6 +80,21 @@ public class LatchCommands implements CommandListener {
         if (caller instanceof Player) {
             latch.unpairPlayer((Player)caller);
         }
+    }
+
+    @Command(aliases = { "latch_save" },
+            description = "Unpair a player using directly its latch account.",
+            permissions = { "" },
+            toolTip = "/latch_save"
+            )
+    public void saveCommand(MessageReceiver caller, String[] parameters) {
+            if (caller instanceof Player) {
+                plugin.getLogman().info(parameters.length);
+                plugin.getLogman().info("AAAAAAAAAAAAAAAA");
+                String accountCode = parameters[1];
+                plugin.getLogman().info("command save " + accountCode);
+                latch.save((Player)caller, accountCode);
+            }
     }
 
     /**

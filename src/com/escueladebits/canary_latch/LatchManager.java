@@ -32,6 +32,7 @@ import net.canarymod.database.exceptions.DatabaseWriteException;
 import net.canarymod.database.exceptions.DatabaseReadException;
 import java.util.HashMap;
 import net.canarymod.logger.Logman;
+import net.canarymod.Canary;
 
 /**
  * This class of 
@@ -149,6 +150,10 @@ public class LatchManager {
         return getLatchStatus(player) == "off";
     }
 
+    public void save(Player player, String account) {
+        setLatchAccount(player, account);
+    }
+
     /**
      *
      * @param player     A Minecraft player
@@ -178,9 +183,12 @@ public class LatchManager {
 
         try {
             Database.get().update(data, filter);
+            plugin.getLogman().info("Database write SUCCESS!");
         }
         catch (DatabaseWriteException ex) {
             // TODO: Problems to solve
+            plugin.getLogman().info("FAIL updating.");
+            plugin.getLogman().info(ex);
         }
     }
 
@@ -191,13 +199,15 @@ public class LatchManager {
         return dataAccess.latchAccount;
     }
 
-    private void setLatchAccount(Player player, String latchAccount) {
+    private void setLatchAccount(Player player, String account) {
         LatchDataAccess dataAccess = new LatchDataAccess();
-        String name = player.getName(), account = dataAccess.latchAccount;
+        String name = player.getName();
         dataAccess.playerName = name;
         dataAccess.latchAccount = account;
-  
+        dataAccess.latchStatus = "on";
+ 
         plugin.getLogman().info("Setting (" + name + ", " + account + ")");
+        plugin.getLogman().info("Default status: " + dataAccess.latchStatus);
         updateLatchData(player, dataAccess);
     }
 
@@ -209,12 +219,10 @@ public class LatchManager {
     }
 
     private void setLatchStatus(Player player, String status) {
-        LatchDataAccess dataAccess = new LatchDataAccess();
-        String name = player.getName();
-        dataAccess.playerName = name;
+        LatchDataAccess dataAccess = getLatchData(player);
         dataAccess.latchStatus = status;
 
-        plugin.getLogman().info("(" + name + ", " + status + ")");
+        plugin.getLogman().info("(" + player.getName() + ", " + status + ")");
         updateLatchData(player, dataAccess);
     }
 }

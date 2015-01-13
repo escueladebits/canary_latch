@@ -23,6 +23,8 @@ import net.canarymod.plugin.Plugin;
 import net.canarymod.Canary;
 import net.canarymod.commandsys.CommandDependencyException;
 import net.visualillusionsent.utils.TaskManager;
+import net.canarymod.database.Database;
+import net.canarymod.database.exceptions.DatabaseWriteException;
 
 /**
  * This class provides an additional security access layer to a CanaryMod
@@ -69,8 +71,18 @@ public class LatchPlugin extends Plugin {
             Canary.commands().registerCommands(commands, this, false);
         }
         catch (CommandDependencyException ex) {
+            getLogman().info("FAIL registering commands");
             return false;
         }
+
+        try {
+            Database.get().updateSchema(new LatchDataAccess());
+        }
+        catch (DatabaseWriteException ex) {
+            getLogman().info("FAIL updating database.");
+            return false;
+        }
+
         
         getLogman().info("Plugin " + name + " ready. Updating status ...");
         latch.updateAll();
