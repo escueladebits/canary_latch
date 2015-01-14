@@ -147,7 +147,7 @@ public class LatchManager {
      * @param player     A Minecraft player
      */
     public boolean isLatchOut(Player player) {
-        return getLatchStatus(player) == "off";
+        return getLatchStatus(player).equals("off");
     }
 
     public void save(Player player, String account) {
