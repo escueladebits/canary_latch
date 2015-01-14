@@ -30,3 +30,10 @@ along with Canary Latch. If not, see http://www.gnu.org/licenses/.
 
 ## KNOWN USERS
 
+## The logo
+The CanaryLatch logo is a modification of a XIXth century (1878) illustration
+at http://vintageprintable.com/vintage-printable-october-4-of-5-animals-birds/,
+most probably in the public domain.
+
+// TODO: logo license
+
